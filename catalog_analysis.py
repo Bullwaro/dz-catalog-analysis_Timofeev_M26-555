@@ -2,25 +2,35 @@ import math
 
 movies = [
     {"title": "The Dune Chronicles", "year": 2021, "genres": {"sci-fi", "drama"},
-     "rating": 8.6, "duration_min": 155, "actors": ["T. Chalamet", "R. Ferguson", "O. Isaac"]},
+     "rating": 8.6, "duration_min": 155, 
+     "actors": ["T. Chalamet", "R. Ferguson", "O. Isaac"]},
     {"title": "Kitchen Stories", "year": 2019, "genres": {"comedy", "drama"},
-     "rating": 7.1, "duration_min": 98, "actors": ["A. Novak", "M. Ferguson"]},
+     "rating": 7.1, "duration_min": 98, 
+     "actors": ["A. Novak", "M. Ferguson"]},
     {"title": "silent hours", "year": 2016, "genres": {"thriller", "drama"},
-     "rating": 6.4, "duration_min": 112, "actors": ["J. Bloom", "K. Lee"]},
+     "rating": 6.4, "duration_min": 112, 
+     "actors": ["J. Bloom", "K. Lee"]},
     {"title": "Comet Racers", "year": 2023, "genres": {"sci-fi", "action"},
-     "rating": 5.9, "duration_min": 101, "actors": ["O. Isaac", "P. Diaz"]},
+     "rating": 5.9, "duration_min": 101, 
+     "actors": ["O. Isaac", "P. Diaz"]},
     {"title": "The Last Bakery", "year": 2014, "genres": {"comedy"},
-     "rating": 7.8, "duration_min": 89, "actors": ["A. Novak", "T. Chalamet"]},
+     "rating": 7.8, "duration_min": 89, 
+     "actors": ["A. Novak", "T. Chalamet"]},
     {"title": "midnight in oslo", "year": 2020, "genres": {"thriller", "mystery"},
-     "rating": 8.9, "duration_min": 124, "actors": ["K. Lee", "R. Ferguson"]},
+     "rating": 8.9, "duration_min": 124, 
+     "actors": ["K. Lee", "R. Ferguson"]},
     {"title": "Garden of Static", "year": 2022, "genres": {"drama"},
-     "rating": 4.8, "duration_min": 137, "actors": ["P. Diaz", "J. Bloom"]},
+     "rating": 4.8, "duration_min": 137, 
+     "actors": ["P. Diaz", "J. Bloom"]},
     {"title": "The Quiet Algorithm", "year": 2024, "genres": {"sci-fi", "drama"},
-     "rating": 9.2, "duration_min": 118, "actors": ["M. Ferguson", "O. Isaac"]},
+     "rating": 9.2, "duration_min": 118, 
+     "actors": ["M. Ferguson", "O. Isaac"]},
     {"title": "Two Left Shoes", "year": 2011, "genres": {"comedy"},
-     "rating": 6.0, "duration_min": 95, "actors": ["A. Novak", "K. Lee"]},
+     "rating": 6.0, "duration_min": 95, 
+     "actors": ["A. Novak", "K. Lee"]},
     {"title": "Red Harbor", "year": 2018, "genres": {"action", "thriller"},
-     "rating": 7.3, "duration_min": 129, "actors": ["P. Diaz", "T. Chalamet"]},
+     "rating": 7.3, "duration_min": 129, 
+     "actors": ["P. Diaz", "T. Chalamet"]},
 ]
 
 #1 Средний рейтинг всех фильмов
@@ -39,10 +49,12 @@ def catalog_age_stats(movies: list[dict], current_year=2026):
     avg_year = 0
 
     for movie in movies:
-        oldest = current_year - movie["year"] if current_year - movie["year"] > oldest else oldest
-        youngest = current_year - movie["year"] if current_year - movie["year"] < youngest else youngest
-        avg_year += movie["year"]
-    avg_year = (current_year * len(movies) - avg_year) / len(movies)
+        age = current_year - movie['year']
+
+        oldest = max(age, oldest)
+        youngest = min(age, youngest)
+        avg_year += age
+    avg_year = avg_year / len(movies)
 
     return oldest, youngest, math.ceil(avg_year)
 
@@ -72,7 +84,7 @@ def decade_label(year):
             return 'старые'
 
 #3 Количество фильмов длиннее threshold
-def count_long_movies(movies: list[dict], threshold = 120):
+def count_long_movies(movies: list[dict], threshold=120):
     long_movies_counter = 0
 
     for movie in movies:
@@ -120,14 +132,18 @@ def format_report_line(movie: dict):
 
 #5 Список названий фильмов по убыванию рейтинга
 def titles_sorted_by_rating(movies: list[dict]):
-    sorted_movies = sorted(movies, key= lambda movie: movie['rating'], reverse= True)
+    sorted_movies = sorted(movies, key=lambda movie: movie['rating'], reverse=True)
     sorted_movies = [movie['title'] for movie in sorted_movies]
 
     return sorted_movies
 
 #5 Топ-n фильмов по рейтингу
 def top_n_by_rating(movies: list[dict], n=3):
-    sorted_movies = sorted(movies, key= lambda movie: movie['rating'], reverse= True)[:n]
+    sorted_movies = sorted(
+        movies, 
+        key=lambda movie: movie['rating'], 
+        reverse=True
+    )[:n]
     top_titles = [(movie['title'], movie['rating']) for movie in sorted_movies]
 
     return top_titles
@@ -140,7 +156,13 @@ def count_by_genre(movies: list[dict]):
         for genre in movie['genres']:
             genres_counter[genre] = genres_counter.get(genre, 0) + 1
 
-    genres_counter = dict(sorted(genres_counter.items(), key= lambda item: item[1], reverse= True))
+    genres_counter = dict(
+        sorted(
+        genres_counter.items(), 
+        key=lambda item: item[1], 
+        reverse=True
+        )
+    )
     return genres_counter
 
 #6 Словарь фильмов по актёрам
@@ -155,7 +177,10 @@ def actor_filmography(movies: list[dict]):
     return actors_in_films
 
 #6 Словарь из фильмов с оценкой выше среднего при помощи генератора
-films_better_avg = {movie['title']: movie['rating'] for movie in movies if movie['rating'] > average_rating(movies)}
+films_better_avg = {
+    movie['title']: movie['rating'] 
+    for movie in movies 
+    if movie['rating'] > average_rating(movies)}
 
 #7 Множество всех уникальных жанров каталога
 def all_genres(movies: list[dict]):
@@ -193,7 +218,7 @@ def iter_high_rated(movies: list[dict], min_rating=8.0):
 for movie in iter_high_rated(movies):    
     print(format_report_line(movie))
 
-#8 Генераторное выражение, считающее суммарную длительность фильмов с рейтингом выше 7 в минутах
+#8 Генераторное выражение суммарной длительность фильмов с рейтингом выше 7 в минутах
 films_duration = sum(m["duration_min"] for m in movies if m["rating"] > 7)
 
 #9 Итоговый отчёт
