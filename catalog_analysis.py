@@ -50,7 +50,7 @@ def catalog_age_stats(movies: list[dict], current_year=2026):
 def duration_in_hours(minutes):
     hours = minutes // 60
     minutes %= 60
-    return hours, minutes
+    return f"{hours}ч {minutes}м"
 
 #2 Субъективная оценка фильма по рейтингу
 def rating_tier(rating):
@@ -80,7 +80,6 @@ def count_long_movies(movies: list[dict], threshold = 120):
             long_movies_counter += 1
     return long_movies_counter
 
-
 #3 Вывод некомедийных фильмов
 for movie in movies:
     if 'comedy' in movie['genres']:
@@ -98,7 +97,26 @@ while i < len(movies):
 else:
     print('Шедевров не найдено')
 
+#4 Привод строки к формату Title Case
+def normalize_title(title: str):
+    string_splitted = title.split()
 
+    for i, word in enumerate(string_splitted):
+        string_splitted[i] = word[0].upper() + word[1:]
+
+    return ' '.join(string_splitted)
+
+#4 Привод нормализованного название в "слаг"
+def make_slug(title: str):
+    return title.lower().replace(' ', '-')
+
+#4 Информация о фильме
+def format_report_line(movie: dict):
+    return (f'"{normalize_title(movie['title'])}" '
+            f'({movie['year']}) - '
+            f'{movie['rating']}/10, '
+            f'{duration_in_hours(movie['duration_min'])}, '
+            f'жанры: {', '.join(sorted(movie['genres']))}')
 
 print(average_rating(movies))
 print(catalog_age_stats(movies))
@@ -106,3 +124,7 @@ print(duration_in_hours(movies[0]["duration_min"]))
 print(rating_tier(5))
 print(decade_label(2016))
 print(count_long_movies(movies))
+
+print(normalize_title('Hello my friend'))
+print(make_slug('Hello my friend'))
+print(format_report_line(movies[7]))
