@@ -1,0 +1,15 @@
+[project]
+name = "dz-catalog-analysis-timofeev-m26-555"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Bullwaro", email = "kirill.timofeev.2003@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.3",
+]
