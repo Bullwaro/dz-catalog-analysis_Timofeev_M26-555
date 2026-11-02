@@ -23,32 +23,36 @@ movies = [
      "rating": 7.3, "duration_min": 129, "actors": ["P. Diaz", "T. Chalamet"]},
 ]
 
-#Средний рейтинг всех фильмов
+#1 Средний рейтинг всех фильмов
 def average_rating(movies: list[dict]):
     avg_rating = 0
+
     for movie in movies:
         avg_rating += movie["rating"]
+        
     return round(avg_rating / len(movies), 1)
 
-#Самый старый фильм в годах, самый новый фильм в годах, среднее
+#1 Самый старый фильм в годах, самый новый фильм в годах, среднее
 def catalog_age_stats(movies: list[dict], current_year=2026):
     oldest = float("inf")
     youngest = float("-inf")
     avg_year = 0
+
     for movie in movies:
         oldest = movie["year"] if movie["year"] < oldest else oldest
         youngest = movie["year"] if movie["year"] > youngest else youngest
         avg_year += movie["year"]
     avg_year /= len(movies)
+
     return oldest, youngest, math.ceil(avg_year)
 
-#Перевод продолжительности в часы и минуты
+#1 Перевод продолжительности в часы и минуты
 def duration_in_hours(minutes):
     hours = minutes // 60
     minutes %= 60
     return hours, minutes
 
-#Субъективная оценка фильма по рейтингу
+#2 Субъективная оценка фильма по рейтингу
 def rating_tier(rating):
     if 7 <= rating < 9:
         return 'хорошо'
@@ -57,7 +61,7 @@ def rating_tier(rating):
     else:
         return 'шедевр' if rating >= 9 else 'слабо'
 
-#Субъективная оценка фильма по дате выхода
+#2 Субъективная оценка фильма по дате выхода
 def decade_label(year):
     match year:
         case _ if year > 2020:
@@ -67,9 +71,38 @@ def decade_label(year):
         case _ if year < 2015:
             return 'старые'
 
+#3 Количество фильмов длиннее threshold
+def count_long_movies(movies: list[dict], threshold = 120):
+    long_movies_counter = 0
 
-print (average_rating(movies))
+    for movie in movies:
+        if movie['duration_min'] > threshold:
+            long_movies_counter += 1
+    return long_movies_counter
+
+
+#3 Вывод некомедийных фильмов
+for movie in movies:
+    if 'comedy' in movie['genres']:
+        continue
+    print(movie['title'])
+
+#3 Поиск первого шедевра
+i = 0
+masterpiece = ''
+while i < len(movies):
+    if movies[i]['rating'] > 9:
+        masterpiece = movies[i]['title']
+        break
+    i += 1
+else:
+    print('Шедевров не найдено')
+
+
+
+print(average_rating(movies))
 print(catalog_age_stats(movies))
 print(duration_in_hours(movies[0]["duration_min"]))
 print(rating_tier(5))
 print(decade_label(2016))
+print(count_long_movies(movies))
