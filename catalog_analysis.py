@@ -118,6 +118,20 @@ def format_report_line(movie: dict):
             f'{duration_in_hours(movie['duration_min'])}, '
             f'жанры: {', '.join(sorted(movie['genres']))}')
 
+#5 Список названий фильмов по убыванию рейтинга
+def titles_sorted_by_rating(movies: list[dict]):
+    sorted_movies = sorted(movies, key= lambda movie: movie['rating'], reverse= True)
+    sorted_movies = [movie['title'] for movie in sorted_movies]
+
+    return sorted_movies
+
+#5 Топ-n фильмов по рейтингу
+def top_n_by_rating(movies, n=3):
+    sorted_movies = sorted(movies, key= lambda movie: movie['rating'], reverse= True)[:n]
+    top_titles = [(movie['title'], movie['rating']) for movie in sorted_movies]
+
+    return top_titles
+
 print(average_rating(movies))
 print(catalog_age_stats(movies))
 print(duration_in_hours(movies[0]["duration_min"]))
@@ -128,3 +142,9 @@ print(count_long_movies(movies))
 print(normalize_title('Hello my friend'))
 print(make_slug('Hello my friend'))
 print(format_report_line(movies[7]))
+
+print(titles_sorted_by_rating(movies))
+print(top_n_by_rating(movies, 5))
+
+print(titles_sorted_by_rating(movies))
+print(top_n_by_rating(movies, 5))
