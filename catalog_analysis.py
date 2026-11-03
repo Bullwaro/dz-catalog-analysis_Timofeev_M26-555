@@ -34,15 +34,15 @@ def average_rating(movies: list[dict]):
 
 #1 Самый старый фильм в годах, самый новый фильм в годах, среднее
 def catalog_age_stats(movies: list[dict], current_year=2026):
-    oldest = float("inf")
-    youngest = float("-inf")
+    oldest = float("-inf")
+    youngest = float("inf")
     avg_year = 0
 
     for movie in movies:
-        oldest = movie["year"] if movie["year"] < oldest else oldest
-        youngest = movie["year"] if movie["year"] > youngest else youngest
+        oldest = current_year - movie["year"] if current_year - movie["year"] > oldest else oldest
+        youngest = current_year - movie["year"] if current_year - movie["year"] < youngest else youngest
         avg_year += movie["year"]
-    avg_year /= len(movies)
+    avg_year = (current_year * len(movies) - avg_year) / len(movies)
 
     return oldest, youngest, math.ceil(avg_year)
 
@@ -140,6 +140,7 @@ def count_by_genre(movies: list[dict]):
         for genre in movie['genres']:
             genres_counter[genre] = genres_counter.get(genre, 0) + 1
 
+    genres_counter = dict(sorted(genres_counter.items(), key= lambda item: item[1], reverse= True))
     return genres_counter
 
 #6 Словарь фильмов по актёрам
@@ -170,7 +171,7 @@ def common_actors(movie1: dict, movie2: dict):
     return set(movie1['actors']) & set(movie2['actors'])
 
 #7 Уникальные жанры, встречающиеся в movies_a, но не в movies_b
-def genres_only_in_one(movies_a: dict, movies_b: dict):
+def genres_only_in_one(movies_a: list[dict], movies_b: list[dict]):
     genres_a = set()
     genres_b = set()
 
@@ -188,31 +189,28 @@ def iter_high_rated(movies: list[dict], min_rating=8.0):
         if movie['rating'] >= min_rating:
             yield movie
 
-print(average_rating(movies))
-print(catalog_age_stats(movies))
-print(duration_in_hours(movies[0]["duration_min"]))
-print(rating_tier(5))
-print(decade_label(2016))
-print(count_long_movies(movies))
-
-print(normalize_title('Hello my friend'))
-print(make_slug('Hello my friend'))
-print(format_report_line(movies[7]))
-
-print(titles_sorted_by_rating(movies))
-print(top_n_by_rating(movies, 5))
-
-print(titles_sorted_by_rating(movies))
-print(top_n_by_rating(movies, 5))
-
-print(count_by_genre(movies))
-print(actor_filmography(movies))
-print(films_better_avg)
-
-print(all_genres(movies))
-print('___________')
-print(common_actors(movies[0], movies[3]))
-print(genres_only_in_one(movies[5:6], movies[:5]))
-
+#8 Вывод функции-генератора
 for movie in iter_high_rated(movies):    
     print(format_report_line(movie))
+
+#8 Генераторное выражение, считающее суммарную длительность фильмов с рейтингом выше 7 в минутах
+films_duration = sum(m["duration_min"] for m in movies if m["rating"] > 7)
+
+#9 Итоговый отчёт
+def build_report(movies):
+    print('\nОТЧЁТ ПО КАТАЛОГУ')
+    print('Средний рейтинг всего каталога: ', average_rating(movies)) #1
+    print('Средний возраст фильмов:', catalog_age_stats(movies)[2], 'лет')
+    print('Фильмов дольше двух часов: ', count_long_movies(movies)) #3
+    print('\nТОП-3 фильма каталога по рейтингу зрителей:') #2, 4 и 5
+    for title_rating in top_n_by_rating(movies, 3):
+        for movie in movies:
+            if title_rating[0] == movie['title']:
+                print(format_report_line(movie))
+    print('\nКоличество фильмов по жанрам:')
+    genres_counter = count_by_genre(movies)
+    for genre in genres_counter:
+        print(f"{genre}: {genres_counter.get(genre)}")
+    print('Все жанры каталога:', ', '.join(sorted(all_genres(movies))))
+
+build_report(movies)
