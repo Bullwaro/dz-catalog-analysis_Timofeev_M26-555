@@ -182,6 +182,12 @@ def genres_only_in_one(movies_a: dict, movies_b: dict):
 
     return genres_a - genres_b
 
+#8 Функция-генератор
+def iter_high_rated(movies: list[dict], min_rating=8.0):
+    for movie in movies:
+        if movie['rating'] >= min_rating:
+            yield movie
+
 print(average_rating(movies))
 print(catalog_age_stats(movies))
 print(duration_in_hours(movies[0]["duration_min"]))
@@ -207,3 +213,6 @@ print(all_genres(movies))
 print('___________')
 print(common_actors(movies[0], movies[3]))
 print(genres_only_in_one(movies[5:6], movies[:5]))
+
+for movie in iter_high_rated(movies):    
+    print(format_report_line(movie))
