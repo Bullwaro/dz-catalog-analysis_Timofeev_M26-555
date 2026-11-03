@@ -135,7 +135,7 @@ def top_n_by_rating(movies: list[dict], n=3):
 #6 Словарь-счётчик фильмов по жанрам
 def count_by_genre(movies: list[dict]):
     genres_counter = {}
-    
+
     for movie in movies:
         for genre in movie['genres']:
             genres_counter[genre] = genres_counter.get(genre, 0) + 1
@@ -155,6 +155,32 @@ def actor_filmography(movies: list[dict]):
 
 #6 Словарь из фильмов с оценкой выше среднего при помощи генератора
 films_better_avg = {movie['title']: movie['rating'] for movie in movies if movie['rating'] > average_rating(movies)}
+
+#7 Множество всех уникальных жанров каталога
+def all_genres(movies: list[dict]):
+    genres = set()
+
+    for movie in movies:
+        genres |= movie['genres']
+
+    return genres
+
+#7 Множество актёров, снимавшихся в обоих фильмах
+def common_actors(movie1: dict, movie2: dict):
+    return set(movie1['actors']) & set(movie2['actors'])
+
+#7 Уникальные жанры, встречающиеся в movies_a, но не в movies_b
+def genres_only_in_one(movies_a: dict, movies_b: dict):
+    genres_a = set()
+    genres_b = set()
+
+    for movie in movies_a:
+        genres_a.update(movie['genres'])
+
+    for movie in movies_b:
+        genres_b.update(movie['genres'])
+
+    return genres_a - genres_b
 
 print(average_rating(movies))
 print(catalog_age_stats(movies))
@@ -176,3 +202,8 @@ print(top_n_by_rating(movies, 5))
 print(count_by_genre(movies))
 print(actor_filmography(movies))
 print(films_better_avg)
+
+print(all_genres(movies))
+print('___________')
+print(common_actors(movies[0], movies[3]))
+print(genres_only_in_one(movies[5:6], movies[:5]))
