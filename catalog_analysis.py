@@ -93,21 +93,23 @@ def count_long_movies(movies: list[dict], threshold=120):
     return long_movies_counter
 
 #3 Вывод некомедийных фильмов
-for movie in movies:
-    if 'comedy' in movie['genres']:
-        continue
-    print(movie['title'])
+def noncomedy_films(movies: list[dict]):
+    for movie in movies:
+        if 'comedy' in movie['genres']:
+            continue
+        print(movie['title'])
 
 #3 Поиск первого шедевра
-i = 0
-masterpiece = ''
-while i < len(movies):
-    if movies[i]['rating'] > 9:
-        masterpiece = movies[i]['title']
-        break
-    i += 1
-else:
-    print('Шедевров не найдено')
+def find_shedevr(movies: list[dict]):
+    i = 0
+    masterpiece = ''
+    while i < len(movies):
+        if movies[i]['rating'] > 9:
+            masterpiece = movies[i]['title']
+            break
+        i += 1
+    else:
+        print('Шедевров не найдено')
 
 #4 Привод строки к формату Title Case
 def normalize_title(title: str):
@@ -219,7 +221,8 @@ for movie in iter_high_rated(movies):
     print(format_report_line(movie))
 
 #8 Генераторное выражение суммарной длительность фильмов с рейтингом выше 7 в минутах
-films_duration = sum(m["duration_min"] for m in movies if m["rating"] > 7)
+def good_films_durability(movies: list[dict]):
+    films_duration = sum(m["duration_min"] for m in movies if m["rating"] > 7)
 
 #9 Итоговый отчёт
 def build_report(movies):
@@ -238,4 +241,5 @@ def build_report(movies):
         print(f"{genre}: {genres_counter.get(genre)}")
     print('Все жанры каталога:', ', '.join(sorted(all_genres(movies))))
 
-build_report(movies)
+if __name__ == "__main__":
+    build_report(movies)
