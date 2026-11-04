@@ -110,6 +110,7 @@ def find_shedevr(movies: list[dict]):
         i += 1
     else:
         print('Шедевров не найдено')
+    return masterpiece
 
 #4 Привод строки к формату Title Case
 def normalize_title(title: str):
